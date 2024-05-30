@@ -7,8 +7,8 @@ const Specialist = async () => {
       revalidate: 30,
     },
   });
-  const { data: specialties } = await res.json();
-  console.log(specialties);
+  const { data: specialities } = await res.json();
+  console.log(specialities);
   return (
     <Container>
       <Box
@@ -23,14 +23,14 @@ const Specialist = async () => {
           }}
         >
           <Typography variant="h4" fontWeight={600}>
-            Explore Treatments Across Specialties
+            Explore Treatments Across Specialities
           </Typography>
           <Typography component="p" fontWeight={300} fontSize={18} mt={1}>
-            Experienced Doctors Across All Specialties
+            Experienced Doctors Across All Specialities
           </Typography>
         </Box>
         <Stack direction="row" gap={4} mt={5}>
-          {specialties.map((specialty: any) => (
+          {specialities.slice(0, 6).map((specialty: any) => (
             <Box
               key={specialty.id}
               sx={{

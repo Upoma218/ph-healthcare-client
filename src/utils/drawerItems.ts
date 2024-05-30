@@ -13,7 +13,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
 
   switch (role) {
-    case USER_ROLE.SUPER_ADMIN:
+    case USER_ROLE.superAdmin:
       roleMenus.push(
         {
           title: "Dashboard",
@@ -28,7 +28,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
       );
       break;
 
-    case USER_ROLE.ADMIN:
+    case USER_ROLE.admin:
       roleMenus.push(
         {
           title: "Dashboard",
@@ -36,8 +36,8 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
           icon: DashboardIcon,
         },
         {
-          title: "Specialties",
-          path: `${role}/specialties`,
+          title: "Specialities",
+          path: `${role}/specialities`,
           icon: TryIcon,
         },
         {
@@ -63,7 +63,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
       );
       break;
 
-    case USER_ROLE.DOCTOR:
+    case USER_ROLE.doctor:
       roleMenus.push(
         {
           title: "Dashboard",
@@ -83,7 +83,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
       );
       break;
 
-    case USER_ROLE.PATIENT:
+    case USER_ROLE.patient:
       roleMenus.push(
         {
           title: "Appointments",
@@ -106,6 +106,6 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
     default:
       break;
   }
-
+  console.log(roleMenus);
   return [...roleMenus];
 };
