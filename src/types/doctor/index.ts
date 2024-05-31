@@ -11,11 +11,11 @@ export interface IDoctor {
   qualification: string;
   currentWorkingPlace: string;
   designation: string;
-  specialties?: ISpecialties[];
+  specialities?: ISpecialities[];
 }
 
-export interface ISpecialties {
-  specialtiesId: string;
+export interface ISpecialities {
+  specialitiesId: string;
   isDeleted?: null;
 }
 

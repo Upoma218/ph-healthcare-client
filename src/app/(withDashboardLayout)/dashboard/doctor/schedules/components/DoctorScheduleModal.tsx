@@ -51,7 +51,7 @@ const DoctorScheduleModal = ({ open, setOpen }: TProps) => {
       const res = await createDoctorSchedule({
         scheduleIds: selectedScheduleIds,
       });
-      console.log(res);
+      // console.log(res);
       setOpen(false);
     } catch (error) {
       console.log(error);

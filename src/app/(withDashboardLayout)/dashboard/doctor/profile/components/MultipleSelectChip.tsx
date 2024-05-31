@@ -21,20 +21,31 @@ const MenuProps = {
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
     fontWeight:
-      personName.indexOf(name) === -1
+      personName?.indexOf(name) === -1
         ? theme.typography.fontWeightRegular
         : theme.typography.fontWeightMedium,
   };
 }
 
+interface Specialty {
+  id: string;
+  title: string;
+}
+
+interface MultipleSelectChipProps {
+  allSpecialities: Specialty[];
+  setSelectedIds: (ids: string[]) => void;
+  selectedIds: string[];
+}
+
 export default function MultipleSelectChip({
-  allSpecialties,
+  allSpecialities,
   setSelectedIds,
   selectedIds,
-}: any) {
+}: MultipleSelectChipProps) {
   const theme = useTheme();
 
-  const handleChange = (event: SelectChangeEvent<typeof selectedIds>) => {
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
     } = event;
@@ -49,7 +60,7 @@ export default function MultipleSelectChip({
           id="demo-multiple-chip-label"
           sx={{ mt: selectedIds.length > 0 ? 0 : -1 }}
         >
-          Specialties
+          Specialities
         </InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
@@ -60,23 +71,19 @@ export default function MultipleSelectChip({
           input={
             <OutlinedInput
               id="select-multiple-chip"
-              label="Specialties"
+              label="Specialities"
               size="small"
             />
           }
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-              {selected.map((value: any) => (
+              {selected?.map((value) => (
                 <Chip
                   size="small"
                   key={value}
                   label={
-                    allSpecialties.find((item: any) => item.id === value)
-                      ? `${
-                          allSpecialties.find((item: any) => item.id === value)
-                            ?.title
-                        }`
-                      : ""
+                    allSpecialities.find((item) => item.id === value)?.title ||
+                    ""
                   }
                 />
               ))}
@@ -84,13 +91,13 @@ export default function MultipleSelectChip({
           )}
           MenuProps={MenuProps}
         >
-          {allSpecialties?.map((item: any) => (
+          {allSpecialities?.map((item) => (
             <MenuItem
-              key={item?.id}
+              key={item.id}
               value={item.id}
               style={getStyles(item.id, selectedIds, theme)}
             >
-              {item?.title}
+              {item.title}
             </MenuItem>
           ))}
         </Select>

@@ -1,4 +1,4 @@
-import { IMeta } from "@/types";
+import { IMeta } from "@/types/common";
 import { IDoctor } from "@/types/doctor";
 import { tagTypes } from "../tag-types";
 import { baseApi } from "./baseApi";
@@ -48,7 +48,7 @@ export const doctorApi = baseApi.injectEndpoints({
     // update a doctor
     updateDoctor: build.mutation({
       query: (data) => {
-        console.log(data);
+        // console.log(data);
         return {
           url: `/doctor/${data.id}`,
           method: "PATCH",

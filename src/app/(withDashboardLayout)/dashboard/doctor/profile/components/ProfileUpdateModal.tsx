@@ -10,7 +10,7 @@ import {
   useGetDoctorQuery,
   useUpdateDoctorMutation,
 } from "@/redux/api/doctorApi";
-import { useGetAllSpecialtiesQuery } from "@/redux/api/specialtiesApi";
+import { useGetAllSpecialitiesQuery } from "@/redux/api/specialtiesApi";
 import { Gender } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Grid } from "@mui/material";
@@ -29,7 +29,7 @@ const validationSchema = z.object({
     (x) => (x ? x : undefined),
     z.coerce.number().int().optional()
   ),
-  apointmentFee: z.preprocess(
+  appointmentFee: z.preprocess(
     (x) => (x ? x : undefined),
     z.coerce.number().int().optional()
   ),
@@ -44,29 +44,31 @@ const validationSchema = z.object({
 
 const ProfileUpdateModal = ({ open, setOpen, id }: TProps) => {
   const { data: doctorData, refetch, isSuccess } = useGetDoctorQuery(id);
-  const { data: allSpecialties } = useGetAllSpecialtiesQuery(undefined);
-  const [selectedSpecialtiesIds, setSelectedSpecialtiesIds] = useState([]);
-
+  const { data: allSpecialities } = useGetAllSpecialitiesQuery([]);
+  const [selectedSpecialitiesIds, setSelectedSpecialitiesIds] = useState<
+    string[]
+  >([]);
   const [updateDoctor, { isLoading: updating }] = useUpdateDoctorMutation();
 
   useEffect(() => {
     if (!isSuccess) return;
 
-    setSelectedSpecialtiesIds(
-      doctorData?.doctorSpecialties.map((sp: any) => {
-        return sp.specialtiesId;
-      })
+    console.log("Doctor Data:", doctorData); // Debug log
+
+    setSelectedSpecialitiesIds(
+      doctorData?.doctorSpecialities?.map((sp: any) => sp?.specialitiesId) || []
     );
   }, [isSuccess]);
 
   const submitHandler = async (values: FieldValues) => {
-    const specialties = selectedSpecialtiesIds.map((specialtiesId: string) => ({
-      specialtiesId,
-      isDeleted: false,
-    }));
-
-    console.log({ id });
-    // return;
+    const specialities = selectedSpecialitiesIds.map(
+      (specialitiesId: string) => ({
+        specialitiesId,
+        isDeleted: false,
+      })
+    );
+    console.log("Form Values:", values); // Debug log
+    console.log("Selected Specialities:", specialities); // Debug log
 
     const excludedFields: Array<keyof typeof values> = [
       "email",
@@ -82,23 +84,27 @@ const ProfileUpdateModal = ({ open, setOpen, id }: TProps) => {
       "profilePhoto",
       "registrationNumber",
       "schedules",
-      "doctorSpecialties",
+      "doctorSpecialities",
     ];
 
     const updatedValues = Object.fromEntries(
       Object.entries(values).filter(([key]) => {
-        return !excludedFields.includes(key);
+        return !excludedFields.includes(key as keyof typeof values);
       })
     );
 
-    updatedValues.specialties = specialties;
+    updatedValues.specialities = specialities;
 
     try {
-      updateDoctor({ body: updatedValues, id });
+      // Make sure to delete existing specialities first
+      await updateDoctor({ body: { specialities: [] }, id });
+
+      // Now update the doctor with new values including specialities
+      await updateDoctor({ body: updatedValues, id });
       await refetch();
       setOpen(false);
     } catch (error) {
-      console.log(error);
+      console.error("Update Error:", error); // Debug log
     }
   };
 
@@ -161,9 +167,9 @@ const ProfileUpdateModal = ({ open, setOpen, id }: TProps) => {
           </Grid>
           <Grid item xs={12} sm={12} md={4}>
             <PHInput
-              name="apointmentFee"
+              name="appointmentFee"
               type="number"
-              label="ApointmentFee"
+              label="AppointmentFee"
               sx={{ mb: 2 }}
               fullWidth
             />
@@ -195,9 +201,9 @@ const ProfileUpdateModal = ({ open, setOpen, id }: TProps) => {
           </Grid>
           <Grid item xs={12} sm={12} md={4}>
             <MultipleSelectChip
-              allSpecialties={allSpecialties}
-              selectedIds={selectedSpecialtiesIds}
-              setSelectedIds={setSelectedSpecialtiesIds}
+              allSpecialities={allSpecialities}
+              selectedIds={selectedSpecialitiesIds}
+              setSelectedIds={setSelectedSpecialitiesIds}
             />
           </Grid>
         </Grid>

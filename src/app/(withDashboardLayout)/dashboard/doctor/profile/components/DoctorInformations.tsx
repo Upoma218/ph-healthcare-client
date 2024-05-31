@@ -56,9 +56,9 @@ const DoctorInformation = ({ data }: any) => {
       <Stack direction={{ xs: "column", md: "row" }} flexWrap={"wrap"} gap={2}>
         <StyledInformationBox>
           <Typography variant="caption" color="secondary">
-            Anointment Fee
+            Appointment Fee
           </Typography>
-          <Typography>{data?.apointmentFee}</Typography>
+          <Typography>{data?.appointmentFee}</Typography>
         </StyledInformationBox>
         <StyledInformationBox>
           <Typography variant="caption" color="secondary">

@@ -2,8 +2,9 @@
 import { useGetAllDoctorSchedulesQuery } from "@/redux/api/doctorScheduleApi";
 import { ISchedule } from "@/types/schedule";
 import { dateFormatter } from "@/utils/dateFormatter";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Button, IconButton } from "@mui/material";
+import { Box, Button, IconButton, Pagination } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -12,41 +13,46 @@ import DoctorScheduleModal from "./components/DoctorScheduleModal";
 const DoctorSchedulesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const query: Record<string, any> = {};
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(3);
+
+  query["page"] = page;
+  query["limit"] = limit;
+
   const [allSchedule, setAllSchedule] = useState<any>([]);
-  const { data, isLoading } = useGetAllDoctorSchedulesQuery({});
+  const { data, isLoading } = useGetAllDoctorSchedulesQuery({ ...query });
   // console.log(data);
 
   const schedules = data?.doctorSchedules;
   const meta = data?.meta;
 
-  // console.log(schedules);
+  // console.log({ schedules });
+
+  let pageCount: number;
+
+  if (meta?.total) {
+    pageCount = Math.ceil(meta.total / limit);
+  }
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   useEffect(() => {
-    const updateData = schedules?.map(
-      (doctorSchedule: ISchedule, index: number) => {
-        console.log({
-          startDate: doctorSchedule?.schedule?.startDateTime,
-          startTime: doctorSchedule?.schedule?.startDateTime,
-          endTime: doctorSchedule?.schedule?.endDateTime,
-        });
-        return {
-          sl: index + 1,
-          id: doctorSchedule?.scheduleId,
-          startDate: dateFormatter(doctorSchedule?.schedule?.startDateTime),
-          startTime: dayjs(doctorSchedule?.schedule?.startDateTime).format(
-            "hh:mm a"
-          ),
-          endTime: dayjs(doctorSchedule?.schedule?.endDateTime).format(
-            "hh:mm a"
-          ),
-        };
-      }
-    );
+    const updateData = schedules?.map((schedule: ISchedule, index: number) => {
+      return {
+        id: schedule?.scheduleId,
+        startDate: dateFormatter(schedule?.schedule?.startDateTime),
+        startTime: dayjs(schedule?.schedule?.startDateTime).format("hh:mm a"),
+        endTime: dayjs(schedule?.schedule?.endDateTime).format("hh:mm a"),
+      };
+    });
     setAllSchedule(updateData);
   }, [schedules]);
 
   const columns: GridColDef[] = [
-    { field: "sl", headerName: "SL" },
     { field: "startDate", headerName: "Date", flex: 1 },
     { field: "startTime", headerName: "Start Time", flex: 1 },
     { field: "endTime", headerName: "End Time", flex: 1 },
@@ -68,7 +74,11 @@ const DoctorSchedulesPage = () => {
 
   return (
     <Box>
-      <Button onClick={() => setIsModalOpen(true)}>
+      <Button
+        onClick={() => setIsModalOpen(true)}
+        endIcon={<AddIcon />}
+        sx={{ mt: 3.5 }}
+      >
         Create Doctor Schedule
       </Button>
       <DoctorScheduleModal open={isModalOpen} setOpen={setIsModalOpen} />
@@ -77,7 +87,31 @@ const DoctorSchedulesPage = () => {
       <Box>
         {!isLoading ? (
           <Box my={2}>
-            <DataGrid rows={allSchedule ?? []} columns={columns} />
+            <DataGrid
+              rows={allSchedule ?? []}
+              columns={columns}
+              hideFooterPagination
+              slots={{
+                footer: () => {
+                  return (
+                    <Box
+                      sx={{
+                        mb: 2,
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Pagination
+                        color="primary"
+                        count={pageCount}
+                        page={page}
+                        onChange={handleChange}
+                      />
+                    </Box>
+                  );
+                },
+              }}
+            />
           </Box>
         ) : (
           <h1>Loading.....</h1>

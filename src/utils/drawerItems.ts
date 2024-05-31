@@ -2,15 +2,33 @@ import { USER_ROLE } from "@/contants/role";
 import { DrawerItem, UserRole } from "@/types";
 
 //icons
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import BookOnlineIcon from "@mui/icons-material/BookOnline";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupIcon from "@mui/icons-material/Group";
+import KeyIcon from "@mui/icons-material/Key";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
+import PersonIcon from "@mui/icons-material/Person";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import TryIcon from "@mui/icons-material/Try";
 
 export const drawerItems = (role: UserRole): DrawerItem[] => {
   const roleMenus: DrawerItem[] = [];
+
+  const defaultMenus = [
+    {
+      title: "Profile",
+      path: `${role}/profile`,
+      icon: PersonIcon,
+    },
+    {
+      title: "Change Password",
+      path: `change-password`,
+      icon: KeyIcon,
+    },
+  ];
 
   switch (role) {
     case USER_ROLE.superAdmin:
@@ -53,7 +71,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
         {
           title: "Appointments",
           path: `${role}/appointments`,
-          icon: CalendarMonthIcon,
+          icon: BookOnlineIcon,
         },
         {
           title: "Reviews",
@@ -78,7 +96,7 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
         {
           title: "Appointments",
           path: `${role}/appointment`,
-          icon: CalendarMonthIcon,
+          icon: BookOnlineIcon,
         }
       );
       break;
@@ -88,17 +106,17 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
         {
           title: "Appointments",
           path: `${role}/appointments`,
-          icon: DashboardIcon,
+          icon: BookOnlineIcon,
         },
         {
           title: "Prescriptions",
           path: `${role}/prescriptions`,
-          icon: DashboardIcon,
+          icon: ReceiptLongIcon,
         },
         {
           title: "Payment History",
           path: `${role}/payment-history`,
-          icon: DashboardIcon,
+          icon: AttachMoneyIcon,
         }
       );
       break;
@@ -106,6 +124,6 @@ export const drawerItems = (role: UserRole): DrawerItem[] => {
     default:
       break;
   }
-  console.log(roleMenus);
-  return [...roleMenus];
+
+  return [...roleMenus, ...defaultMenus];
 };

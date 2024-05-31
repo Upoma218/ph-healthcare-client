@@ -1,8 +1,8 @@
 "use client";
 import {
   useDeleteSpecialtyMutation,
-  useGetAllSpecialtiesQuery,
-} from "@/redux/api/specialtiesApi";
+  useGetAllSpecialitiesQuery,
+} from "@/redux/api/specialitiesApi";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, Stack, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -13,7 +13,7 @@ import SpecialtyModal from "./components/SpecialtyModal";
 
 const SpecialitiesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { data = [], isLoading } = useGetAllSpecialtiesQuery({});
+  const { data = [], isLoading } = useGetAllSpecialitiesQuery({});
   const [deleteSpecialty] = useDeleteSpecialtyMutation();
 
   const handleDelete = async (id: string) => {

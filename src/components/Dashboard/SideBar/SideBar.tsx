@@ -13,7 +13,7 @@ const SideBar = () => {
 
   useEffect(() => {
     const { role } = getUserInfo() as any;
-    console.log(role);
+    // console.log(role);
     setUserRole(role);
   }, []);
 
